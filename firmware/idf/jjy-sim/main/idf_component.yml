@@ -1,0 +1,3 @@
+dependencies:
+  shachi-lab/oled_display:
+    git: https://github.com/shachi-lab/oled_display.git

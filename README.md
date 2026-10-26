@@ -1,111 +1,104 @@
-# 📡 JJY Simulator Rev.3 for ESP32-C3 / ESP8684
+# 📡 JJY-SIM R4 (with R3 design references)
 
 Build your own JJY time-signal simulator with an ESP32-C3 or ESP8684!  
 This compact simulator reproduces the 40 kHz / 60 kHz JJY radio time signal using PWM output,  
 based on accurate time obtained from NTP.  
-Rev.3 is developed with ESP-IDF.  
+R2, R3 and R4 share an ESP-IDF firmware codebase.  
 
-Latest version: **R3-1.0.6**
+**R4 is the latest model. The older R3 design files are retained for reference.**
+
+The firmware version is **1.2.0**.
 
 👉 [README 日本語版はこちら](README_ja.md)
 
 ---
 
+## R4 / R3 / R2 layout
+
+| Item | R4 (latest model) | R3 (older model, for reference) | R2 (older model) |
+|---|---|---|---|
+| Exterior | Antenna inside the case | Antenna outside the case | Similar to R3 |
+| MCU | ESP32-C3 | ESP8684 (ESP32-C2) | ESP32-C3 |
+| Resonance selection | Automatic switching via GPIO3 | On-board switch | Solder jumpers |
+| Firmware | Shared source, esp32c3 build | Shared source, esp32c2 build | Shared source, esp32c3 build |
+| Hardware design files | Included (r4 / r4.1, r4_ant)| Included for reference (r3)| Not included |
+
+R3 and R4 use PCB antennas. R4 stacks a main PCB and three antenna PCBs inside the case. R3 integrates the main circuitry and antenna on one PCB, with the antenna extending outside the case.
+
+R2 has an exterior similar to R3, but uses an ESP32-C3 and solder jumpers for resonance selection. It can use the C3 build of the shared firmware. R2 hardware design files are not included in this repository.
+
+The shared R2/R3/R4 firmware sources are in `firmware/idf/jjy-sim`.
+R4 is identified by the eFuse field `USER_DATA_JJYSIM_HW_GENERATION` set to `4`. An unconfigured ESP32-C3 runs as R2. A self-built R4 requires this identification field to be programmed. eFuse writes are irreversible; verify the board and `main/esp_efuse_custom_table.csv` before programming.
+
+See the [USB flashing instructions (Japanese)](firmware/idf/jjy-sim/README.md).
+
+Board designs are in `hardware/KiCad/r3`, `r4`, `r4.1` and `r4_ant`, with shared libraries in `hardware/KiCad/lib`. Each board has its own `PLOT` directory. Case models are in `hardware/case_3d/r3` and `r4`.
+
+`hardware/KiCad/r4.1` contains an alternative component layout for the R4 PCB. The order of the L/C/R components in the resonant circuit has also been changed to accommodate the new layout.
+
 ## 🪛 Features
 
-* Supports both **ESP32-C3** and **ESP8684**
-* Full-featured implementation based on **ESP-IDF**
-* **Easy AP mode** for Wi-Fi setup with a single button
-* **OLED display** for checking the current time and sync status
-* Automatic time synchronization via **NTP**
-* Switchable **JJY 40 kHz (eastern Japan) / 60 kHz (western Japan)**
-* Output **band optimization** can be selected with an on-board switch
-* Signal is radiated from a built-in **simple antenna** on the board
-* **H-bridge output stage** for higher output power (may transmit farther than expected)
-* Configuration page accessible from a **web browser**
-* Supports **time zones** and **DST (Daylight Saving Time)**
-* **Hourly Mode** for periodic JJY signal output
-* **Night Mode** for reducing OLED display brightness at night
-* **Offset Time** adjustment for fine-tuning the transmitted time
-* Displays a **clock screen** during operation
+* Generates **JJY 40 kHz / 60 kHz** signals from time obtained via **NTP**
+* Equipped with a **PCB antenna** (inside the case on R4)
+* Shows the time and operating status on an **OLED display**
+* Configures Wi-Fi and operating settings through a **web browser**
+* Supports **Hourly Mode, Night Mode and a screen saver**
+* Distributes time to devices on the LAN as an **NTP server**
+* Supports firmware updates over Wi-Fi via **OTA updates**
+
+*R4 exterior*  
+
+<a href="./images/jjy-sim-r4.jpg">
+<img src="./images/jjy-sim-r4.jpg" alt="JJY Simulator Rev.4" width=400 style="max-width:100%; height:auto;"></a><br/>
+
+*For reference: the older R3 model below*  
 
 <a href="./images/jjy-sim-r3.jpg">
-<img src="./images/jjy-sim-r3.jpg" alt="JJY Simulator Rev.3" width=400 style="max-width:100%; height:auto;"></a><br/>
+<img src="./images/jjy-sim-r3.jpg" alt="JJY Simulator Rev.3" width=300 style="max-width:100%; height:auto;"></a><br/>
 
 ---
 
 ## 🛠 Build and Flash (ESP-IDF / CLI)
 
-JJY-SIM R3 is built and flashed using ESP-IDF.  
-R2 was Arduino-based,  
-but R3 has moved to ESP-IDF for better timing accuracy and a cleaner overall architecture.
+Use **ESP-IDF v5.5.4** and run these commands from `firmware/idf/jjy-sim`. Arduino builds are not supported.
 
-> ### ⚠️ Note
-> * This project cannot be built in the Arduino environment
-> * This is an ESP-IDF-only project
-
-### ■ Environment
-
-* ESP-IDF v5.x
-* Python (with a working `idf.py` environment)
-
-For ESP-IDF setup, please refer to the official documentation.
-
-### ■ Build
-
-Move to the project directory and run:
+R3 (ESP8684 / ESP32-C2):
 
 ```bash
-idf.py build
+idf.py -B build-c2 -D IDF_TARGET=esp32c2 -D SDKCONFIG=sdkconfig.c2 build
+idf.py -B build-c2 -D IDF_TARGET=esp32c2 -D SDKCONFIG=sdkconfig.c2 -p COMx flash monitor
 ```
 
-### ■ Flash
+R4 (ESP32-C3):
 
 ```bash
-idf.py flash
+idf.py -B build -D IDF_TARGET=esp32c3 -D SDKCONFIG=sdkconfig.c3 build
+idf.py -B build -D IDF_TARGET=esp32c3 -D SDKCONFIG=sdkconfig.c3 -p COMx flash monitor
 ```
 
-If you need to specify the serial port:
+Replace `COMx` with your serial port. `partitions.csv` defines the OTA partition layout. Migration from the old layout requires USB flashing including the partition table, not just the application image.
 
-```bash
-idf.py -p COMx flash
+### Program the R4 identification eFuse
+
+The ESP32-C3 on a self-built R4 needs the identification value `4`. **Do not run this procedure on R3. eFuse programming is irreversible.**
+
+In an ESP-IDF environment, change to `firmware/idf/jjy-sim` and replace `COMx` with the port of the target R4. These commands use a USB connection.
+
+First, check the current value:
+
+```powershell
+espefuse --chip esp32c3 -p COMx --before usb_reset --extend-efuse-table main/esp_efuse_custom_table.csv summary
 ```
 
-### ■ Serial Monitor
+Confirm that `USER_DATA_JJYSIM_HW_GENERATION` is `0` (unprogrammed) before writing `4` with the command below. If it is already `4`, no write is needed. For any other value, do not attempt to overwrite it using this procedure.
 
-```bash
-idf.py monitor
+```powershell
+espefuse --chip esp32c3 -p COMx --before usb_reset --extend-efuse-table main/esp_efuse_custom_table.csv burn_efuse USER_DATA_JJYSIM_HW_GENERATION 4
 ```
 
-### ■ Full Command
-
-```bash
-idf.py -p COMx flash monitor
-```
-
-This single command lets you flash the firmware and open the log output at the same time.
-
-### ■ Target Selection
-
-Set the target once during initial setup.
-The required target depends on which module you are using.
-
-* When using **ESP32-C3**:
-
-```bash
-idf.py set-target esp32c3
-```
-
-* When using **ESP8684**:
-  Since the ESP8684 is based on **ESP32-C2**,
-  select `esp32c2` as the chip target.
-
-```bash
-idf.py set-target esp32c2
-```
+Review the target and changes shown by the tool, then follow its confirmation prompt. After programming, run the `summary` command again and confirm that the value is `4`. Restart the board so that the firmware identifies it as R4.
 
 ---
-
 ## 🛠 Build and Flash (VSCode / GUI)
 
 You can also develop this project using **VSCode + the ESP-IDF Extension**.
@@ -135,46 +128,23 @@ with a single click.
 ### ■ Workspace
 
 When opening the project in VSCode,
-open **`jjy-sim-r3.code-workspace`** in the source-code folder
-to work with the ESP-IDF Extension settings already included.
+open **`JJY-SIM.code-workspace`** in the source-code folder
+then select your local ESP-IDF 5.5.4 installation and either `C3 (R2 / R4)` or `C2 (R3)` configuration.
 
 ---
 
 ## ⚙️ Usage
 
-### ■ Wi-Fi Setup
-
-* After power-on or reset, press the **CONFIG** switch within 5 seconds  
-  On first boot, the device enters Wi-Fi setup mode automatically
-* An AP named `JJY-SIM-R3-XXXXXXXX` will start
-* Connect from a smartphone or PC → a captive portal will appear
-* Select the SSID and enter the password
-* You can also configure the band, local time, and DST (Daylight Saving Time) as needed
-* Click **[Save and Reboot]** to save the settings and restart the device
-
-### ■ Operation Check
-
-* After power-on or reset, the logo is shown. If left untouched for 5 seconds, the device will try to connect to the configured Wi-Fi AP
-* Once connected, it obtains the current time from an NTP server
-* The current time is shown on the OLED, and JJY signal output starts from second 0 using PWM
-* Just press the **receive button** on your radio-controlled clock and place it nearby
-
-### ■ Controls During Operation
-
-While the clock screen is displayed, the following operations are available:
-
-* Press the **[CONFIG]** button for about 1 second to show the information screen  
-  Press **[CONFIG]** again to return to the clock screen
-* Press and hold the **[CONFIG]** button for 5 seconds or longer to stop JJY transmission output  
-  Press and hold **[CONFIG]** again for 5 seconds or longer to resume JJY transmission output
+Refer to the model-specific manuals on the [JJY-SIM support page](https://blog.shachi-lab.com/support/) for settings, screens and controls.
+R4 switches its resonance circuit automatically with the BAND setting. On R3, also set the on-board switch to match the selected BAND.
 
 ---
-
 ## 🔌 Pin Assignment (Main Signals)
 
 | Function       | GPIO | Notes                                                        |
 | -------------- | ---- | ------------------------------------------------------------ |
 | JJY PWM output | 10,4 | Modulated output signals, inverted A/B pair for the H-bridge |
+| R4 BAND selection | 3 | R4 only; resonance circuit switching |
 | CONFIG switch  | 9    | Used for Wi-Fi setup (**shared with BOOT pin**)              |
 | ACT LED        | 5    | Activity LED                                                 |
 | IND LED        | 0    | Status indicator LED (can be shared)                         |
@@ -200,25 +170,54 @@ This component is publicly available on GitHub.
 * The hardware design files are located in the **`hardware`** folder.
 * The schematic and PCB design data are in **`hardware/KiCad`**.
 
-  * Compatible with **KiCad Ver.9** only (cannot be opened with Ver.8 or earlier)
-  * **Gerber data** is included in **`KiCad/PLOT`**, so the board can be fabricated as-is
+  * Saved with **KiCad 10** (R4 design files require KiCad 10 or later)
+  * **Gerber data** is included in **`hardware/KiCad/<revision>/PLOT`**, so the board can be fabricated as-is
 * The 3D case data is in **`hardware/case_3d`**.
+
+---
+
+## 🔧 DIY Assembly
+
+### R4 antenna
+
+Building an R4 requires **stacking three antenna PCBs**. The antenna stack and main PCB fit inside the case.
+
+PCB thickness: **1.6 mm for the main PCB and 0.8 mm for each antenna PCB**.
+
+### OLED supports (R3 / R4)
+
+Both R3 and R4 PCBs include tab-shaped sections for the OLED supports. **Break these sections off during assembly and use them as supports for the OLED.**
+
+### Case screws
+
+Use **hex M2 × 5 mm self-tapping screws** to fasten the case.
 
 ---
 
 ## 📸 Appearance / Assembly Examples
 
-These are the board and case exterior views.  
+The photos below show the R4 board and case.  
 The design uses a black PCB and a black case so that only the display appears to float visually.
 
+<a href="./images/jjy-sim-r4_pcb.jpg">
+<img src="./images/jjy-sim-r4_pcb.jpg" alt="JJY Simulator Rev.4 PCB" width=300 style="max-width:100%; height:auto;"></a>
+<a href="./images/jjy-sim-r4_case.jpg">
+<img src="./images/jjy-sim-r4_case.jpg" alt="JJY Simulator Rev.4 with case" width=300 style="max-width:100%; height:auto;"></a><br/>
+
+### R3 (for reference)
+
+The photos below show the R3 board and case.  
+
 <a href="./images/jjy-sim-r3_pcb.jpg">
-<img src="./images/jjy-sim-r3_pcb.jpg" alt="JJY Simulator Rev.3 PCB" width=300 style="max-width:100%; height:auto;"></a>
+<img src="./images/jjy-sim-r3_pcb.jpg" alt="JJY Simulator Rev.3 PCB" width=200 style="max-width:100%; height:auto;"></a>
 <a href="./images/jjy-sim-r3_case.jpg">
-<img src="./images/jjy-sim-r3_case.jpg" alt="JJY Simulator Rev.3 with case" width=300 style="max-width:100%; height:auto;"></a><br/>
+<img src="./images/jjy-sim-r3_case.jpg" alt="JJY Simulator Rev.3 with case" width=200 style="max-width:100%; height:auto;"></a><br/>
 
 ---
 
 ## ⚠️ Caution
+
+The R4 antenna section becomes slightly warm during operation.
 
 This device may radiate farther than expected.  
 Please make sure to comply with applicable radio regulations when experimenting with it.

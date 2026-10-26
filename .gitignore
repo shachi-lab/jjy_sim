@@ -1,0 +1,24 @@
+# KiCad local state and backups
+*.kicad_prl
+*-backups/
+~*.lck
+# Build outputs and downloaded dependencies
+build/
+build-*/
+managed_components/
+__pycache__/
+*.pyc
+sdkconfig.old
+sdkconfig.*.old
+# Local editor and OS state
+.vscode/
+.DS_Store
+Thumbs.db
+
+*.log
+dependencies.lock
+
+# Shared ESP-IDF project configuration
+!firmware/idf/jjy-sim/.vscode/
+!firmware/idf/jjy-sim/.vscode/*.json
+!firmware/idf/jjy-sim/dependencies.lock

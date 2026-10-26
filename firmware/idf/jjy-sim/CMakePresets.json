@@ -1,0 +1,60 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "c2",
+      "displayName": "C2 (R3)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-c2",
+      "cacheVariables": {
+        "IDF_TARGET": "esp32c2",
+        "SDKCONFIG": "${sourceDir}/sdkconfig.c2"
+      },
+      "environment": {
+        "IDF_TARGET": "esp32c2"
+      }
+    },
+    {
+      "name": "c3",
+      "displayName": "C3 (R2 / R4)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "IDF_TARGET": "esp32c3",
+        "SDKCONFIG": "${sourceDir}/sdkconfig.c3"
+      },
+      "environment": {
+        "IDF_TARGET": "esp32c3"
+      },
+      "vendor": {
+        "espressif/vscode-esp-idf": {
+          "schemaVersion": 1,
+          "settings": [
+            {
+              "type": "openOCD",
+              "value": {
+                "debugLevel": 2,
+                "configs": [
+                  "board/esp32c3-builtin.cfg"
+                ],
+                "args": []
+              }
+            },
+            {
+              "type": "ninjaArgs",
+              "value": [
+                "-j",
+                "4"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

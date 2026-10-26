@@ -1,13 +1,13 @@
 (footprint "SKRPACE010"
-	(version 20260206)
+	(version 20241229)
 	(generator "pcbnew")
-	(generator_version "10.0")
+	(generator_version "9.0")
 	(layer "F.Cu")
 	(descr "SMD Tact Switch, 3.2mm x 4.2mm")
 	(property "Reference" "SW1"
 		(at 0 0 0)
 		(layer "F.SilkS")
-		(uuid "f143d991-541a-4f2d-b6ce-4a72cfe97707")
+		(uuid "5b976693-e640-4b59-a97c-30718485cde5")
 		(effects
 			(font
 				(size 0.8128 0.762)
@@ -18,7 +18,7 @@
 	(property "Value" "BUTTON"
 		(at 0.127 2.54 0)
 		(layer "F.SilkS")
-		(uuid "3e64a7be-66d3-4a34-bef4-6bbf163a02ce")
+		(uuid "810ac0d7-1d15-440a-899d-5e4ad337267a")
 		(effects
 			(font
 				(size 0.8128 0.8128)
@@ -30,7 +30,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "9b3b4738-21fe-479d-880b-2f03433b8227")
+		(uuid "5d1acad9-2579-4cb6-af53-20137633f37f")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -42,7 +42,7 @@
 		(at 0 0 0)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "e58d0444-0ec7-43bb-9b59-740a311bd7dd")
+		(uuid "994fe34b-5f38-4fa2-8861-ee597afb1976")
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -51,7 +51,6 @@
 		)
 	)
 	(attr smd)
-	(duplicate_pad_numbers_are_jumpers no)
 	(fp_line
 		(start -2.3 -0.381)
 		(end -2.3 0.381)
@@ -60,7 +59,7 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "b94b6331-4f18-4f70-9e1d-5012702112ee")
+		(uuid "4064e22d-bb8d-491b-ac82-7e4e7c162ae5")
 	)
 	(fp_line
 		(start -0.762 -1.6)
@@ -70,7 +69,7 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "db52c1c3-c4dc-4308-a750-b9e655195d4a")
+		(uuid "16640baf-ea6c-43d2-9b11-07ae8744ceac")
 	)
 	(fp_line
 		(start 0.762 1.6)
@@ -80,7 +79,7 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "813222ed-7dc8-4bbe-96b2-bdfb1152a135")
+		(uuid "39569d76-c82a-498d-8696-9c4462306e4c")
 	)
 	(fp_line
 		(start 2.3 -0.381)
@@ -90,34 +89,34 @@
 			(type solid)
 		)
 		(layer "F.SilkS")
-		(uuid "0fc7dc9b-cc42-4de9-b0e0-2d80f4a2529f")
+		(uuid "890e21a5-96c1-42b7-acae-66f84bc63094")
 	)
 	(pad "1" smd rect
 		(at -2 -1.1176)
 		(size 1.5 0.7)
 		(layers "F.Cu" "F.Mask" "F.Paste")
-		(uuid "e1976735-59c4-4c3d-a784-ac2b5e2163b9")
+		(uuid "c093638b-8607-41e8-a9a9-993e8fcdd62f")
 	)
 	(pad "2" smd rect
 		(at 2 -1.1176)
 		(size 1.5 0.7)
 		(layers "F.Cu" "F.Mask" "F.Paste")
-		(uuid "e8a19124-f65e-435e-a3ee-5e81f5838419")
+		(uuid "31c06f0b-dc0c-4468-a1f5-a4543b0cb6b0")
 	)
 	(pad "3" smd rect
 		(at -2 1.1176)
 		(size 1.5 0.7)
 		(layers "F.Cu" "F.Mask" "F.Paste")
-		(uuid "7da9e132-c7cf-475c-a879-86b0d6aad1be")
+		(uuid "581c4ca0-deb2-42f2-8342-e7ec4728d10e")
 	)
 	(pad "4" smd rect
 		(at 2 1.1176)
 		(size 1.5 0.7)
 		(layers "F.Cu" "F.Mask" "F.Paste")
-		(uuid "19628997-9685-49ed-9ff1-3e2086df8a22")
+		(uuid "a1c4d5f2-3b12-4775-9124-431bfe7b79fd")
 	)
 	(embedded_fonts no)
-	(model "${KIPRJMOD}/lib/3dmodels/PTS810.STEP"
+	(model "${KICAD6_3RD_PARTY}/TACT_Switch/PTS810.STEP"
 		(offset
 			(xyz 0 0 0)
 		)

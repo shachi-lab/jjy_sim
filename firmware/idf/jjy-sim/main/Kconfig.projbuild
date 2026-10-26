@@ -1,0 +1,5 @@
+menu "JJY-SIM OTA"
+config JJYSIM_UPDATE_BASE_URL
+    string "HTTPS directory containing manifest-latest.json"
+    default "https://download.shachi-lab.com/jjy-sim/"
+endmenu

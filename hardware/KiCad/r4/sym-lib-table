@@ -1,0 +1,5 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "JJY-SIM") (type "KiCad") (uri "${KIPRJMOD}/../lib/symbol/JJY-SIM_Library.kicad_sym") (options "") (descr ""))
+	(lib (name "Shachi-lab") (type "KiCad") (uri "${KIPRJMOD}/../lib/symbol/shachi-lab.kicad_sym") (options "") (descr ""))
+)

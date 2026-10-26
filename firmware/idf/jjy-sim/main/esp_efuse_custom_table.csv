@@ -1,0 +1,3 @@
+# ESP32-C3 only. 0 = unprogrammed/R2; 4 = R4; all other values = R2.
+# field_name, efuse_block, bit_start, bit_count, comment
+USER_DATA.JJYSIM_HW_GENERATION, EFUSE_BLK3, 0, 8, JJY-SIM hardware generation

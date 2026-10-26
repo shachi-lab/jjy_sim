@@ -1,0 +1,169 @@
+(footprint "JJY-SIM ANT CONN"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "Connect to additional Anntena PCB for JJY-SIM R4")
+	(tags "")
+	(property "Reference" "J1"
+		(at 0 -1.3 0)
+		(layer "F.SilkS")
+		(uuid "2a12d20c-8e79-4fed-9958-1b7b7ce1b3b1")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.12)
+			)
+		)
+	)
+	(property "Value" "ANT_EX"
+		(at 0 3.015 0)
+		(layer "F.Fab")
+		(uuid "1ca4ea17-3e1f-4760-af82-67a5328ceee5")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "414db764-f7d7-4494-9a8a-2b0fc1cb9b8c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2e4b9658-de2a-4c7e-b562-d952123d333e")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "KiLib_Generator" "connector/pin_header_socket"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "1f3ba929-6c56-48e7-8d16-4c8ea72184bd")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property ki_fp_filters "Jumper* TestPoint*2Pads* TestPoint*Bridge*")
+	(sheetname "/")
+	(sheetfile "jjy_sim_r4.kicad_sch")
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_rect
+		(start -1.5 -1.5)
+		(end 1.5 3.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "821ddb39-578b-4586-b555-3725dad985ea")
+	)
+	(fp_line
+		(start -1 -0.5)
+		(end -0.5 -1)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "655e6714-a746-4138-90fb-fc386fd951b7")
+	)
+	(fp_line
+		(start -1 3)
+		(end -1 -0.5)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "fee2998a-a759-4440-ad75-13dde748e43e")
+	)
+	(fp_line
+		(start -0.5 -1)
+		(end 1 -1)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "89afcf98-741c-454b-ba65-494c17a3d13d")
+	)
+	(fp_line
+		(start 1 -1)
+		(end 1 3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "30a85277-954e-4870-9de9-0977fc797801")
+	)
+	(fp_line
+		(start 1 3)
+		(end -1 3)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "0bded706-1fc2-43ca-b025-ba0b33281b29")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0.635 90)
+		(layer "F.Fab")
+		(uuid "12991c54-5ae7-4932-b600-9186f6766e00")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at 0 0)
+		(size 1.2 1.2)
+		(drill 0.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "dfce3e82-3bff-43b2-bace-a96ed95fabb9")
+	)
+	(pad "2" thru_hole circle
+		(at 0 2)
+		(size 1.2 1.2)
+		(drill 0.6)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "dda4c872-dc9c-4c7a-b7cf-c700491c4d94")
+	)
+	(embedded_fonts no)
+	(model "${KICAD10_3DMODEL_DIR}/Connector_PinHeader_2.00mm.3dshapes/PinHeader_1x02_P2.00mm_Vertical.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

@@ -1,0 +1,20 @@
+dependencies:
+  idf:
+    source:
+      type: idf
+    version: 5.5.4
+  shachi-lab/oled_display:
+    component_hash: f22db4789c554a8f7d0fb155448d62cf5fe8be0b980c658a59a45ebda2e64df4
+    dependencies:
+    - name: idf
+      version: '>=5.0'
+    source:
+      git: https://github.com/shachi-lab/oled_display.git
+      path: .
+      type: git
+    version: 43ea023d439c3b66fdcbdc79021f6dd6da359a74
+direct_dependencies:
+- shachi-lab/oled_display
+manifest_hash: 358116d11daf66ac1e0fc275da0adb8e1b57d52265a0d4d28c94a85460a057bd
+target: esp32c2
+version: 2.0.0

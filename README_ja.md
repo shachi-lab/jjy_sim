@@ -1,109 +1,104 @@
-# 📡 JJY Simulator Rev.3 for ESP32-C3/ESP8684
+# 📡 JJY-SIM R4（R3の設計資料も収録）
 
 電波時計の補正信号をESP32-C3/ESP8684で自作！  
 NTPから取得した正確な時刻をもとに、40kHz / 60kHz のJJY信号をPWM出力で模倣する、  
 ミニJJYシミュレーターです。  
-Rev.3 は ESP-IDFで開発しました。
+R2 / R3 / R4 は ESP-IDFで開発した共通ファームウェアを使用します。
 
-最新版は **R3-1.0.6** です。
+**最新モデルはR4です。R3は旧モデルの設計資料として、参照用に残しています。**
+
+ファームウェアのバージョンは **1.2.0** です。
 
 👉 [English README is available here](README.md)
 
 ---
 
+## R4 / R3 / R2 の構成
+
+| 項目 | R4（最新モデル） | R3（旧モデル・参照用） | R2（旧モデル） |
+|---|---|---|---|
+| 外観 | アンテナをケース内部に配置 | アンテナがケース外部に配置 | R3と同様 |
+| MCU | ESP32-C3 | ESP8684（ESP32-C2） | ESP32-C3 |
+| 共振回路の切り替え | GPIO3で自動切り替え | 基板上のスイッチ | ハンダジャンパー |
+| ファームウェア | 共通ソース、esp32c3向けビルド | 共通ソース、esp32c2向けビルド | 共通ソース、esp32c3向けビルド |
+| ハードウェア資料 | 収録（r4 / r4.1, r4_ant） | 参照用として収録（r3）| 未収録 |
+
+R3とR4はPCBアンテナを使用しています。R4はメインPCBとアンテナPCB 3枚のスタック構成で、アンテナをケース内に収めています。R3はメイン回路とアンテナが一体のPCBで、アンテナがケース外部に出る構成です。
+
+R2の外観はR3と同様ですが、MCUはESP32-C3で、共振回路はハンダジャンパーで切り替えます。共通FWのC3向けビルドを使用できます。R2のハードウェア資料は、このリポジトリには収録していません。
+
+R2／R3／R4の共通ファームウェアソースは `firmware/idf/jjy-sim` にあります。
+R4はeFuseの `USER_DATA_JJYSIM_HW_GENERATION` が `4` の場合に識別されます。未設定のESP32-C3はR2として動作します。自作R4基板では、この識別情報の設定が必要です。eFuseへの書き込みは不可逆なので、対象基板と `main/esp_efuse_custom_table.csv` を確認してから行ってください。
+
+USBでの書き込み方法は、[書き込み手順](firmware/idf/jjy-sim/README.md)を参照してください。
+
+設計データは `hardware/KiCad/r3`、`r4`、`r4.1`、`r4_ant`、共通ライブラリは `hardware/KiCad/lib` にあります。各基板のガーバーはそれぞれの `PLOT` に、ケースは `hardware/case_3d/r3` と `r4` にあります。
+
+`hardware/KiCad/r4.1` は、R4のPCB上の部品レイアウトを変更した設計データです。レイアウト変更に伴い、共振回路のL/C/Rの並び順も変更しています。
+
 ## 🪛 特徴
 
-* **ESP32-C3 / ESP8684** の両対応
-* **ESP-IDF** による本格的な構成
-* Wi-Fi設定はボタンひとつで **簡単APモード**
-* **OLED 表示** による時刻・同期状態の確認 
-* **NTP** で自動時刻同期
-* **JJY 40kHz（東日本）/ 60kHz（西日本）** を切り替え可能
-* **基板上のスイッチ** で出力BANDへの最適化が可能 
-* 出力信号は基板内蔵の**簡易アンテナ** から放射
-* **Hブリッジ構成** で高出力です（飛びすぎ注意）
-* **Web ブラウザ** での設定ページ
-* **タイムゾーン と、DST（夏時間）** に対応
-* JJY信号を毎時出力する **Hourly Mode**
-* 夜間にOLED表示の輝度を下げる **Night Mode**
-* 送信時刻を微調整できる **Offset Time**
-* 動作中は**時計画面**を表示
+* **NTP**から取得した時刻で、**JJY 40kHz / 60kHz**の信号を生成
+* **PCBアンテナ**を搭載（R4はケース内蔵）
+* **OLED**に時刻・動作状態を表示
+* **ブラウザ**からWi-Fiや各種動作を設定
+* **毎時モード・ナイトモード・スクリーンセーバー**に対応
+* **NTPサーバー**として、LAN内の機器へ時刻を配信
+* **OTAアップデート**で、Wi-Fi経由のファームウェア更新に対応
+
+*R4の外観*  
+
+<a href="./images/jjy-sim-r4.jpg">
+<img src="./images/jjy-sim-r4.jpg" alt="JJYシミュレーター Rev.4" width=400 style="max-width:100%; height:auto;"></a><br/>
+
+*参考：下は旧モデルR3の外観*  
 
 <a href="./images/jjy-sim-r3.jpg">
-<img src="./images/jjy-sim-r3.jpg" alt="JJYシミュレーター Rev.3" width=400 style="max-width:100%; height:auto;"></a><br/>
+<img src="./images/jjy-sim-r3.jpg" alt="JJYシミュレーター Rev.3" width=300 style="max-width:100%; height:auto;"></a><br/>
 
 ---
 
 ## 🛠 ビルドと書込み (ESP-IDF / CLI)
 
-JJY-SIM R3 は、ESP-IDF を使用してビルド・書き込みを行います。  
-R2ではArduinoベースでしたが、  
-R3ではタイミング精度と構造改善のため、ESP-IDFに移行しています。  
+ESP-IDF **v5.5.4** の環境で、`firmware/idf/jjy-sim` に移動して実行します。Arduino環境ではビルドできません。
 
-> ### ⚠️ 注意
-> * Arduino環境ではビルドできません
-> * ESP-IDF専用プロジェクトです
-
-### ■ 環境
-
-* ESP-IDF v5.x
-* Python（idf.py が動作する環境）
-
-ESP-IDFのセットアップについては、公式ドキュメントを参照してください。
-
-### ■ ビルド
-
-プロジェクトディレクトリに移動して、以下を実行します。
+R3（ESP8684 / ESP32-C2）:
 
 ```bash
-idf.py build
+idf.py -B build-c2 -D IDF_TARGET=esp32c2 -D SDKCONFIG=sdkconfig.c2 build
+idf.py -B build-c2 -D IDF_TARGET=esp32c2 -D SDKCONFIG=sdkconfig.c2 -p COMx flash monitor
 ```
 
-### ■ 書き込み
+R4（ESP32-C3）:
 
 ```bash
-idf.py flash
+idf.py -B build -D IDF_TARGET=esp32c3 -D SDKCONFIG=sdkconfig.c3 build
+idf.py -B build -D IDF_TARGET=esp32c3 -D SDKCONFIG=sdkconfig.c3 -p COMx flash monitor
 ```
 
-ポート指定が必要な場合：
+`COMx` は接続先に合わせて変更してください。OTA用パーティション構成は `partitions.csv` に含まれています。旧版からの移行では、アプリだけでなくパーティションテーブルを含むUSB書き込みが必要です。
 
-```bash
-idf.py -p COMx flash
+### R4の識別情報をeFuseに書き込む
+
+自作R4基板のESP32-C3には、R4として識別するための値 `4` を書き込みます。**R3には実行しないでください。eFuseへの書き込みは不可逆です。**
+
+ESP-IDFの環境で `firmware/idf/jjy-sim` に移動し、`COMx` を対象R4のポートに置き換えて実行してください。以下はUSB接続時のコマンドです。
+
+まず現在の値を確認します。
+
+```powershell
+espefuse --chip esp32c3 -p COMx --before usb_reset --extend-efuse-table main/esp_efuse_custom_table.csv summary
 ```
 
-### ■ シリアルモニタ
+`USER_DATA_JJYSIM_HW_GENERATION` が `0`（未設定）であることを確認してから、次のコマンドで `4` を書き込みます。すでに `4` なら書き込みは不要です。その他の値の場合は、この手順で上書きしないでください。
 
-```bash
-idf.py monitor
+```powershell
+espefuse --chip esp32c3 -p COMx --before usb_reset --extend-efuse-table main/esp_efuse_custom_table.csv burn_efuse USER_DATA_JJYSIM_HW_GENERATION 4
 ```
 
-### ■ フルコマンド
-
-```bash
-idf.py -p COMx flash monitor
-```
-
-これひとつで、書き込みとログ確認ができます。
-
-### ■ ターゲット設定
-
-初回のみ、ターゲットを設定してください。  
-使用するモジュールに応じて設定が必要です。
-
-* ESP32-C3 を使用する場合：
-```bash
-idf.py set-target esp32c3
-```
-
-- ESP8684 を使用する場合：  
-ESP8684 は ESP32-C2 ベースのモジュールのため、  
-チップ選択では esp32c2 を指定します。
-```bash
-idf.py set-target esp32c2
-```
+ツールが表示する対象と変更内容を確認し、確認プロンプトに従って書き込みます。完了後、上の `summary` コマンドを再実行し、値が `4` になったことを確認してください。基板を再起動すると、ファームウェアがR4として識別します。
 
 ---
-
 ## 🛠 ビルドと書込み (VSCode / GUI)
 
 VSCode + ESP-IDF Extension を使用した開発も可能です。
@@ -136,45 +131,23 @@ ESP-IDF Extensionのセットアップに従って環境を構築してくださ
 
 
 VSCodeで開く場合は、ソースコードフォルダ内の  
-**`jjy-sim-r3.code-workspace`** を開くことで、  
-ESP-IDF Extension の設定を含めた状態で作業できます。
+**`JJY-SIM.code-workspace`** を開くことで、  
+このPCのESP-IDF 5.5.4環境と `C3 (R2 / R4)` または `C2 (R3)` の構成を選択して作業できます。
 
 ---
 
 ## ⚙️ 使用方法
 
-### ■ Wi-Fi設定
-
-* 電源投入 or リセット後、5秒以内に CONFIGスイッチを押す  
-  初回起動時は無条件にWi-Fi設定状態となります
-* `JJY-SIM-R3-XXXXXXXX` というAPが起動
-* スマホやPCから接続 → キャプティブポータルが表示されます。
-* SSID を選んで Password を設定します。
-* 必要に応じて、BAND、ローカル時間、DST（夏時間）を設定可能です。 
-* [保存して再起動] で、設定した内容を保存して再起動します。
-
-### ■ 動作確認
-
-* 電源投入 or リセット でロゴ表示後、5秒間放置すると、WiFiのAPに接続しに行きます。
-* APに接続すると、NTPサーバーから時刻を取得します。
-* OLEDに現在時刻が表示され、0秒からPWMでJJY信号出力開始
-* 電波時計の「受信ボタン」を押して、近くに置いておくだけ！
-
-### ■ 動作中の操作
-
-画面が時計表示中の時は、以下の操作が可能です。
-* [CONFIG]ボタンを1秒程度押すと、情報画面が表示されます。  
-  再度、[CONFIG]ボタンを押すと、時計画面に戻ります。
-* [CONFIG]ボタンを5秒以上長押しすると、JJYの送信出力を停止します。   
-  再度、[CONFIG]ボタンを5秒以上長押しすると、JJYの送信出力を再開します。 
+世代ごとの設定方法・画面・操作は、[JJY-SIM サポートページ](https://blog.shachi-lab.com/support/)の各マニュアルを参照してください。
+R4の共振回路はWeb画面のBAND設定に連動します。R3はBAND設定に加えて基板上のスイッチも合わせてください。
 
 ---
-
 ## 🔌 ピンアサイン（主なもの）
 
 | 機能 | GPIO | 備考 |
 |------|------|------|
 | JJY PWM出力 | 10,4 | 変調された信号で、Hブリッジ用にA/Bの反転出力 |
+| R4 BAND切り替え | 3 | R4のみ。共振回路を切り替え |
 | CONFIGスイッチ | 9 | Wi-Fi設定用（**BOOTピンと兼用**） |
 | ACT LED | 5 | 動作中LED |
 | IND LED | 0 | 状態表示用LED（共用可） |
@@ -199,25 +172,54 @@ ESP-IDF Extension の設定を含めた状態で作業できます。
 
 * ハードウェア設計データは、**`hardware`** フォルダ にあります。
 * 回路図、基板設計データーは、**`hardware/KiCad`** フォルダにあります。 
-  * **KiCad Ver.9** に対応しています（Ver.8以前では開けません）  
-  * **ガーバーデータ** は **`KiCad/PLOT`** フォルダに含まれており、そのまま基板製作が可能です。
+  * **KiCad Ver.10** に対応しています（Ver.9以前では開けません）  
+  * **ガーバーデータ** は **`hardware/KiCad/<revision>/PLOT`** フォルダに含まれており、そのまま基板製作が可能です。
 * ケースの3Dデーターは、**`hardware/case_3d`** にあります。
+
+---
+
+## 🔧 自作・組み立て
+
+### R4のアンテナ
+
+R4を自作する場合は、**アンテナPCB 3枚をスタックする組み立て作業が必要**です。メインPCBと合わせてケース内部に収めます。
+
+基板厚は、**メインPCBが1.6 mm、アンテナPCBが0.8 mm**です。
+
+### OLEDの台座（R3 / R4共通）
+
+R3 / R4ともに、PCB上にOLEDの台座部分をタブ形状で設けています。**組み立て時にこの部分を折り取り、OLEDの台座として使用してください。**
+
+### ケース固定用ネジ
+
+**六角 M2 × 5 mm タッピングねじ**を使用します。
 
 ---
 
 ## 📸 外観・実装例
 
-基板とケースの外観です。  
+以下の写真はR4の基板とケースです。  
 黒基板＋黒ケースでまとめて、表示だけが浮いて見えるようにしています。
 
+<a href="./images/jjy-sim-r4_pcb.jpg">
+<img src="./images/jjy-sim-r4_pcb.jpg" alt="JJYシミュレーター Rev.4 PCB" width=300 style="max-width:100%; height:auto;"></a>
+<a href="./images/jjy-sim-r4_case.jpg">
+<img src="./images/jjy-sim-r4_case.jpg" alt="JJYシミュレーター Rev.4 ケース付" width=300 style="max-width:100%; height:auto;"></a><br/>
+
+### R3・参考
+
+以下の写真はR3の基板とケースです。  
+
 <a href="./images/jjy-sim-r3_pcb.jpg">
-<img src="./images/jjy-sim-r3_pcb.jpg" alt="JJYシミュレーター Rev.3 PCB" width=300 style="max-width:100%; height:auto;"></a>
+<img src="./images/jjy-sim-r3_pcb.jpg" alt="JJYシミュレーター Rev.3 PCB" width=200 style="max-width:100%; height:auto;"></a>
 <a href="./images/jjy-sim-r3_case.jpg">
-<img src="./images/jjy-sim-r3_case.jpg" alt="JJYシミュレーター Rev.3 ケース付" width=300 style="max-width:100%; height:auto;"></a><br/>
+<img src="./images/jjy-sim-r3_case.jpg" alt="JJYシミュレーター Rev.3 ケース付" width=200 style="max-width:100%; height:auto;"></a><br/>
 
 ---
 
 ## ⚠️ ご注意
+
+R4は動作中にアンテナ部分が多少発熱します。
 
 思った以上に電波が飛びます。  
 電波法を守って実験してください。
